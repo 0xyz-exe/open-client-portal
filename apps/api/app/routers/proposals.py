@@ -170,6 +170,15 @@ def get_public_proposal(token: str, db: Session = Depends(get_db)):
     if not proposal:
         raise HTTPException(status_code=404, detail="Proposal not found or invalid link")
 
+    now = datetime.utcnow()
+    if proposal.expires_at and proposal.expires_at < now and proposal.status not in ["accepted", "expired"]:
+        proposal.status = "expired"
+        db.commit()
+        db.refresh(proposal)
+
+    if proposal.status == "draft":
+        raise HTTPException(status_code=403, detail="Proposal is currently in draft and not yet available for client review")
+
     if proposal.status == "sent":
         proposal.status = "viewed"
         db.commit()
@@ -184,11 +193,23 @@ def accept_public_proposal(token: str, data: ProposalAccept, db: Session = Depen
     if not proposal:
         raise HTTPException(status_code=404, detail="Proposal not found or invalid link")
 
+    now = datetime.utcnow()
+    if proposal.expires_at and proposal.expires_at < now and proposal.status != "accepted":
+        proposal.status = "expired"
+        db.commit()
+        raise HTTPException(status_code=400, detail="Proposal has expired and can no longer be accepted")
+
+    if proposal.status == "draft":
+        raise HTTPException(status_code=403, detail="Draft proposals cannot be accepted")
     if proposal.status == "accepted":
         raise HTTPException(status_code=400, detail="Proposal is already accepted")
+    if proposal.status == "rejected":
+        raise HTTPException(status_code=400, detail="Proposal was previously rejected")
+    if proposal.status == "expired":
+        raise HTTPException(status_code=400, detail="Proposal has expired and cannot be accepted")
 
     proposal.status = "accepted"
-    proposal.accepted_at = datetime.utcnow()
+    proposal.accepted_at = now
     proposal.accepted_by_name = data.accepted_by_name
     proposal.signature_data = data.signature_data
 

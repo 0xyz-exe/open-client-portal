@@ -1,5 +1,8 @@
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
+
+def utc_now():
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 from decimal import Decimal
 from sqlalchemy import (
     Column, Integer, String, Text, Boolean, DateTime, ForeignKey, 
@@ -71,8 +74,8 @@ class Organization(Base):
     branding_color = Column(String(50), default="#4f46e5")
     timezone = Column(String(50), default="UTC")
     currency = Column(String(10), default="USD")
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     members = relationship("OrganizationMember", back_populates="organization", cascade="all, delete-orphan")
     clients = relationship("Client", back_populates="organization", cascade="all, delete-orphan")
@@ -93,8 +96,8 @@ class User(Base):
     avatar_url = Column(String(500), nullable=True)
     global_role = Column(String(50), default=UserRole.MEMBER.value)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     memberships = relationship("OrganizationMember", back_populates="user", cascade="all, delete-orphan")
     client_contact = relationship("ClientContact", back_populates="user", uselist=False)
@@ -106,7 +109,7 @@ class OrganizationMember(Base):
     organization_id = Column(Integer, ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     role = Column(String(50), default=UserRole.MEMBER.value, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     organization = relationship("Organization", back_populates="members")
     user = relationship("User", back_populates="memberships")
@@ -131,8 +134,8 @@ class Client(Base):
     currency = Column(String(10), default="USD")
     notes = Column(Text, nullable=True)
     portal_enabled = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     organization = relationship("Organization", back_populates="clients")
     contacts = relationship("ClientContact", back_populates="client", cascade="all, delete-orphan")
@@ -152,7 +155,7 @@ class ClientContact(Base):
     phone = Column(String(50), nullable=True)
     job_title = Column(String(100), nullable=True)
     is_primary = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     client = relationship("Client", back_populates="contacts")
     user = relationship("User", back_populates="client_contact")
@@ -172,8 +175,8 @@ class Project(Base):
     progress = Column(Integer, default=0)
     start_date = Column(DateTime, nullable=True)
     target_date = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     organization = relationship("Organization", back_populates="projects")
     client = relationship("Client", back_populates="projects")
@@ -194,7 +197,7 @@ class Milestone(Base):
     due_date = Column(DateTime, nullable=True)
     status = Column(String(50), default="pending")
     order_index = Column(Integer, default=0)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     project = relationship("Project", back_populates="milestones")
     tasks = relationship("Task", back_populates="milestone")
@@ -212,8 +215,8 @@ class Task(Base):
     priority = Column(String(50), default=PriorityLevel.MEDIUM.value, nullable=False)
     is_client_visible = Column(Boolean, default=True)
     due_date = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     project = relationship("Project", back_populates="tasks")
     milestone = relationship("Milestone", back_populates="tasks")
@@ -232,8 +235,8 @@ class Deliverable(Base):
     client_feedback = Column(Text, nullable=True)
     submitted_by_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     approved_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     project = relationship("Project", back_populates="deliverables")
     submitted_by = relationship("User")
@@ -260,8 +263,8 @@ class Proposal(Base):
     accepted_at = Column(DateTime, nullable=True)
     accepted_by_name = Column(String(255), nullable=True)
     signature_data = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     organization = relationship("Organization", back_populates="proposals")
     client = relationship("Client", back_populates="proposals")
@@ -301,8 +304,8 @@ class Invoice(Base):
     currency = Column(String(10), default="USD")
     notes = Column(Text, nullable=True)
     payment_terms = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
 
     organization = relationship("Organization", back_populates="invoices")
     client = relationship("Client", back_populates="invoices")
@@ -334,7 +337,7 @@ class Payment(Base):
     transaction_reference = Column(String(100), nullable=True)
     notes = Column(Text, nullable=True)
     paid_at = Column(DateTime, default=datetime.utcnow)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     invoice = relationship("Invoice", back_populates="payments")
 
@@ -353,7 +356,7 @@ class Document(Base):
     category = Column(String(50), default="general")
     is_client_visible = Column(Boolean, default=True)
     uploaded_by_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     organization = relationship("Organization", back_populates="documents")
     client = relationship("Client", back_populates="documents")
@@ -372,7 +375,7 @@ class Comment(Base):
     author_name = Column(String(255), nullable=False)
     content = Column(Text, nullable=False)
     is_internal = Column(Boolean, default=False)  # True = Agency only, False = Client visible
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     project = relationship("Project", back_populates="comments")
     task = relationship("Task", back_populates="comments")
@@ -389,7 +392,7 @@ class Notification(Base):
     message = Column(Text, nullable=False)
     link = Column(String(255), nullable=True)
     is_read = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     organization = relationship("Organization", back_populates="notifications")
     user = relationship("User")
@@ -405,6 +408,18 @@ class AuditLog(Base):
     resource_type = Column(String(100), nullable=False)
     resource_id = Column(String(100), nullable=True)
     metadata_json = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     organization = relationship("Organization", back_populates="audit_logs")
+
+class PasswordResetToken(Base):
+    __tablename__ = "password_reset_tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    token = Column(String(100), unique=True, index=True, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    is_used = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=utc_now)
+
+    user = relationship("User")

@@ -69,11 +69,12 @@ def test_multi_tenant_and_client_portal_security_isolation(client):
     # Invite Client Contact to Portal
     invite_res = client.post(f"/api/v1/clients/{client_a_id}/invite-portal?contact_email=contact@clienta.com", headers=headers_a)
     assert invite_res.status_code == 200
+    temp_pass = invite_res.json()["credentials"]["temporary_password"]
 
     # Client logs into their portal
     client_login = client.post("/api/v1/auth/login", json={
         "email": "contact@clienta.com",
-        "password": "ClientPortalPass123!"
+        "password": temp_pass
     }).json()
     client_token = client_login["access_token"]
     headers_client = {"Authorization": f"Bearer {client_token}"}

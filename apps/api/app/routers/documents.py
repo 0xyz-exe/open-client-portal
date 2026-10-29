@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from app.config import settings
 from app.database import get_db
-from app.models.models import Document, ClientContact, Organization, User, AuditLog
+from app.models.models import Document, ClientContact, Organization, User, AuditLog, Client, Project
 from app.schemas.schemas import DocumentOut
 from app.auth import get_current_user, get_current_org, require_agency_role
 
@@ -53,8 +53,21 @@ async def upload_document(
     _role = Depends(require_agency_role(["owner", "admin", "manager", "member"])),
     db: Session = Depends(get_db)
 ):
-    # Save file to disk
-    file_name = file.filename or "upload.bin"
+    # Verify client_id if passed
+    if client_id:
+        c = db.query(Client).filter(Client.id == client_id, Client.organization_id == org.id).first()
+        if not c:
+            raise HTTPException(status_code=400, detail="Client not found in this organization")
+
+    # Verify project_id if passed
+    if project_id:
+        p = db.query(Project).filter(Project.id == project_id, Project.organization_id == org.id).first()
+        if not p:
+            raise HTTPException(status_code=400, detail="Project not found in this organization")
+
+    # Sanitize file name to prevent path traversal
+    raw_name = file.filename or "upload.bin"
+    file_name = os.path.basename(raw_name)
     file_bytes = await file.read()
     file_size = len(file_bytes)
     
@@ -110,11 +123,13 @@ def download_document(
         if not contact or contact.client_id != doc.client_id or not doc.is_client_visible:
             raise HTTPException(status_code=403, detail="Forbidden: You cannot download this file")
 
-    if not os.path.exists(doc.file_path):
+    real_path = os.path.abspath(doc.file_path)
+    upload_root = os.path.abspath(settings.UPLOAD_DIR)
+    if not real_path.startswith(upload_root) or not os.path.exists(real_path):
         raise HTTPException(status_code=404, detail="File content not found on server storage")
 
     return FileResponse(
-        path=doc.file_path,
+        path=real_path,
         filename=doc.file_name,
         media_type=doc.mime_type
     )

@@ -158,6 +158,12 @@ def record_payment(
     if amount <= Decimal("0.00"):
         raise HTTPException(status_code=400, detail="Payment amount must be greater than zero")
 
+    if invoice.status == "paid" or invoice.balance_due <= Decimal("0.00"):
+        raise HTTPException(status_code=400, detail="Invoice is already fully paid")
+
+    if amount > invoice.balance_due:
+        raise HTTPException(status_code=400, detail=f"Payment amount (${amount}) exceeds outstanding balance due (${invoice.balance_due})")
+
     # Atomic payment record and balance adjustment
     payment = Payment(
         invoice_id=invoice.id,

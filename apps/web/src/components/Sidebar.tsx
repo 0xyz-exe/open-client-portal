@@ -34,6 +34,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentOrgName }) => {
     { name: 'Proposals', path: '/app/proposals', icon: FileText },
     { name: 'Invoices & Payments', path: '/app/invoices', icon: Receipt },
     { name: 'Documents Hub', path: '/app/documents', icon: FolderLock },
+    { name: 'Agency Team', path: '/app/team', icon: Users },
+    { name: 'Settings', path: '/app/settings', icon: ShieldCheck },
   ];
 
   return (

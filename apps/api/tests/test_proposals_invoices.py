@@ -36,6 +36,9 @@ def test_proposals_and_invoices_workflow(client):
     assert prop_data["proposal_number"].startswith("PROP-")
     public_token = prop_data["public_token"]
 
+    # Mark sent
+    client.post(f"/api/v1/proposals/{prop_data['id']}/send", headers=headers)
+
     # 3. Public Review & Sign-Off
     view_res = client.get(f"/api/v1/proposals/public/{public_token}")
     assert view_res.status_code == 200

@@ -24,6 +24,17 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str = Field(..., min_length=6)
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str = Field(..., min_length=6)
+
 class UserOut(BaseModel):
     id: int
     email: str
@@ -43,6 +54,12 @@ class OrgCreate(BaseModel):
     branding_color: Optional[str] = "#4f46e5"
     currency: Optional[str] = "USD"
     timezone: Optional[str] = "UTC"
+
+class OrgUpdate(BaseModel):
+    name: Optional[str] = None
+    branding_color: Optional[str] = None
+    currency: Optional[str] = None
+    timezone: Optional[str] = None
 
 class OrgOut(BaseModel):
     id: int

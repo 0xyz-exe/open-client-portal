@@ -3,7 +3,7 @@ from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.models import Project, Milestone, Task, Deliverable, Organization, User, AuditLog, Client, ClientContact
+from app.models.models import Project, Milestone, Task, Deliverable, Organization, User, AuditLog, Client, ClientContact, OrganizationMember
 from app.schemas.schemas import (
     ProjectCreate, ProjectUpdate, ProjectOut, MilestoneCreate, MilestoneOut,
     TaskCreate, TaskUpdate, TaskOut, DeliverableCreate, DeliverableReview, DeliverableOut
@@ -274,6 +274,14 @@ def review_deliverable(
         contact = db.query(ClientContact).filter(ClientContact.user_id == current_user.id).first()
         if not contact or contact.client_id != deliverable.project.client_id:
             raise HTTPException(status_code=403, detail="Forbidden: You cannot review this deliverable")
+    else:
+        # Agency staff must hold manager or above to review deliverables
+        member = db.query(OrganizationMember).filter(
+            OrganizationMember.organization_id == org.id,
+            OrganizationMember.user_id == current_user.id
+        ).first()
+        if not member or member.role not in ["owner", "admin", "manager"]:
+            raise HTTPException(status_code=403, detail="Agency manager or client authorization required to review deliverables")
 
     if data.status not in ["approved", "rejected"]:
         raise HTTPException(status_code=400, detail="Status must be approved or rejected")

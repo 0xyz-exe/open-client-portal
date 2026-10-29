@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Landing } from './pages/Landing';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { AgencyLayout } from './components/AgencyLayout';
 import { Dashboard } from './pages/Dashboard';
 import { Clients } from './pages/Clients';
@@ -11,6 +13,8 @@ import { Deliverables } from './pages/Deliverables';
 import { Proposals } from './pages/Proposals';
 import { Invoices } from './pages/Invoices';
 import { Documents } from './pages/Documents';
+import { Team } from './pages/Team';
+import { Settings } from './pages/Settings';
 import { ClientPortal } from './pages/ClientPortal';
 import { PublicProposal } from './pages/PublicProposal';
 
@@ -22,6 +26,8 @@ export const App: React.FC = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/proposal/:token" element={<PublicProposal />} />
 
         {/* Client Portal Dedicated View */}
@@ -36,6 +42,8 @@ export const App: React.FC = () => {
           <Route path="proposals" element={<Proposals />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="documents" element={<Documents />} />
+          <Route path="team" element={<Team />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
 
         {/* Fallback */}

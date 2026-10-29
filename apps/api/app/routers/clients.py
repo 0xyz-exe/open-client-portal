@@ -1,3 +1,4 @@
+import secrets
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
@@ -197,7 +198,7 @@ def invite_to_client_portal(
 
     # Check or create user
     user = db.query(User).filter(User.email == contact.email).first()
-    temp_password = "ClientPortalPass123!"
+    temp_password = f"CP_{secrets.token_urlsafe(8)}!"
     if not user:
         user = User(
             email=contact.email,
