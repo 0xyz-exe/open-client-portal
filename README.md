@@ -13,43 +13,70 @@
 
 ---
 
-## 📸 Application Showcase
+## 📸 Complete Platform Showcase
 
-### Agency Command Center & Revenue Analytics
+### 1. Modern Marketing Landing Page
+*Clean, high-conversion landing page presenting features, architecture, self-hosted benefits, and direct demo access.*
+![Marketing Landing Page](docs/screenshots/landing.png)
+
+### 2. Dual-Tab Authentication Gateway & Demo Autofill
+*Unified sign-in interface supporting both Agency Staff and Client Portal users with 1-click test credentials.*
+![Authentication Gateway](docs/screenshots/login.png)
+
+### 3. Agency Command Center & Revenue Analytics
 *Real-time cash flow metrics, active client count, pending deliverable approvals, and immutable audit logs.*
 ![Agency Dashboard](docs/screenshots/dashboard.png)
 
-### Dedicated Branded Client Portal (`/portal`)
+### 4. Dedicated Branded Client Portal (`/portal`)
 *Dedicated external client experience: review pending deliverables, track milestone progress, inspect invoices, and communicate feedback.*
 ![Client Portal View](docs/screenshots/client-portal.png)
 
-### Interactive Projects & Kanban Task Boards
+### 5. Interactive Projects & Kanban Task Boards
 *Track sprint tasks across Todo, In Progress, In Review, and Done with granular client-visibility privacy controls.*
 ![Projects and Kanban](docs/screenshots/projects.png)
 
-### Itemized Electronic Proposals & Scopes of Work
+### 6. Itemized Electronic Proposals & Scopes of Work
 *Create transparent, scoped proposals with automatic tax calculations, discount arithmetic, and sequential numbering.*
 ![Proposals Overview](docs/screenshots/proposals.png)
 
-### Client Proposal Review & Digital Signature Execution
+### 7. Client Proposal Review & Digital Signature Execution
 *Public/client proposal review link with legally recorded digital signatures and execution timestamps.*
 ![Public Proposal View](docs/screenshots/public-proposal.png)
 
-### Invoices, Billing & Payment Reconciliation
+### 8. Invoices, Billing & Payment Reconciliation
 *Issue sequential invoices (`INV-YYYYMM-XXXX`), log partial payments, track balance due, and reconcile cash flow.*
 ![Invoices & Payments](docs/screenshots/invoices.png)
 
-### Client CRM & Portal Credential Generation
+### 9. Client CRM & Portal Credential Generation
 *Manage individual and corporate client accounts, contacts, billing details, and generate instant 1-click portal credentials.*
 ![Client CRM Directory](docs/screenshots/clients.png)
 
-### Deliverables & Client Formal Approval Workflow
+### 10. Deliverables & Client Formal Approval Workflow
 *Formal client review loops: submit prototypes and design assets, receive client remarks, and track signed approvals.*
 ![Deliverables Approvals](docs/screenshots/deliverables.png)
 
-### Secure Documents & Privacy Vault
+### 11. Secure Documents & Privacy Vault
 *Categorized file storage (Contracts, Deliverables, Invoices, Briefs) with server-enforced internal vs client access control.*
 ![Documents Hub](docs/screenshots/documents.png)
+
+---
+
+## 📋 Repository Details & Specifications
+
+| Attribute | Specification |
+| :--- | :--- |
+| **Repository URL** | [https://github.com/0xyz-exe/open-client-portal](https://github.com/0xyz-exe/open-client-portal) |
+| **Maintainer** | `0xyz-exe` ([danielachmadf@gmail.com](mailto:danielachmadf@gmail.com)) |
+| **License** | [MIT License](LICENSE) |
+| **Visibility** | Public Open Source |
+| **Default Branch** | `main` |
+| **Architecture** | Decoupled Multi-Tenant Monolith (FastAPI REST Engine + Vite React 19 SPA) |
+| **Backend Runtime** | Python 3.12+, FastAPI, SQLAlchemy 2.0 ORM, Pydantic v2, PostgreSQL / SQLite |
+| **Frontend Runtime** | React 19, TypeScript strict mode, Vite 6, Tailwind CSS v4, Lucide React, Recharts |
+| **Security Controls** | Bcrypt Password Hashing, JWT Bearer Sessions, Deny-by-default RBAC, Client Resource Boundary Enforcement, Filename Sanitization & Canonical Path Validation, Decimal Arithmetic, Separation of Internal Discussions |
+| **Containerization** | Multi-stage Dockerfiles & Docker Compose (`docker-compose.yml`) |
+| **Automated Tests** | 100% Passing Pytest Suite (Unit, Integration, IDOR & Multi-Tenant Isolation) |
+| **GitHub Topics** | `client-portal`, `freelance-crm`, `agency-management`, `invoicing`, `proposals`, `kanban`, `fastapi`, `react19`, `tailwind-css`, `self-hosted`, `open-source` |
 
 ---
 
