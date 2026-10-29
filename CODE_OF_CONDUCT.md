@@ -1,0 +1,14 @@
+# Contributor Covenant Code of Conduct
+
+## Our Pledge
+We pledge to make participation in our project and community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity, experience level, nationality, personal appearance, race, religion, or sexual identity.
+
+## Our Standards
+Examples of behavior that contributes to a positive environment:
+- Demonstrating empathy and kindness toward other people
+- Being respectful of differing opinions and viewpoints
+- Giving and gracefully accepting constructive feedback
+- Focusing on what is best not just for us as individuals, but for the overall community
+
+## Enforcement
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders at security@openclientportal.dev.

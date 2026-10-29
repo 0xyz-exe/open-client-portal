@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.venv/
+__pycache__/
+*.pyc
+
+# Builds
+dist/
+build/
+*.egg-info/
+
+# Tests & caches
+.pytest_cache/
+*.tsbuildinfo
+
+# Local Databases & Uploads
+*.db
+*.sqlite
+uploads/
+test_ocp.db
+
+# Secrets & Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ocp-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ocp_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ocp_secure_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-open_client_portal}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ocp_user} -d ${POSTGRES_DB:-open_client_portal}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: ocp-api
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-ocp_user}:${POSTGRES_PASSWORD:-ocp_secure_password_2026}@postgres:5432/${POSTGRES_DB:-open_client_portal}
+      SECRET_KEY: ${SECRET_KEY:-ocp-production-super-secret-key-change-me}
+      UPLOAD_DIR: /app/uploads
+      CORS_ORIGINS: "*"
+    volumes:
+      - uploads_data:/app/uploads
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: ocp-web
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:
+  uploads_data:
